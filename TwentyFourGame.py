@@ -1,5 +1,5 @@
 import tkinter as tk
-from data import border, borderW, BGtitle, frameRow3, cijfers, matrix
+from data import border, borderW, BGtitle, frameRow3
 
 def twfGame():
     global twfnummers

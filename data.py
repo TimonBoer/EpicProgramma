@@ -143,3 +143,4 @@ matrix = [[1, 'H', 'Waterstof', 1.00794, 0.000084, -259.1, -252.9],
 cijfers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 frameRow2 = tk.Frame(master=window)
 frameRow3 = tk.Frame(master=window)
+frameRow4 = tk.Frame(master=window)
