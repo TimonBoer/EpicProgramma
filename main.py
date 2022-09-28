@@ -10,6 +10,6 @@ def print_hi(name):
 
 
 if __name__ == '__main__':
-    print_hi('Goor')
+    print_hi('Bonjour')
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
