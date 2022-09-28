@@ -47,16 +47,35 @@ def CalcReac(reactie):
             reac[i][mi].append(form[1])
             reac[i][mi][1] = form[0]
 
-
-    reacstr = reactostr(reac)
     entReac.delete(0, tk.END)
-    entReac.insert(0, reacstr)
+    entReac.insert(0, reactostr(reac))
 
     print(TelAtm(reac))
 
 
 def TelAtm(reac):
-    return
+    count = [{}, {}]
+
+    i = 0
+    x = reac[i]
+    for y in x:
+        for z in y[1]:
+            if z in count[i]:
+                count[i][z] += int(y[1][z]) * int(y[0])
+            else:
+                count[i][z] = int(y[1][z]) * int(y[0])
+
+    i = 1
+    x = reac[i]
+    for y in x:
+        for z in y[1]:
+            if z not in count[0]:
+                return 'Cringe'
+            if z in count[i]:
+                count[i][z] += int(y[1][z]) * int(y[0])
+            else:
+                count[i][z] = int(y[1][z]) * int(y[0])
+    return count
 
 
 
