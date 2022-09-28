@@ -50,7 +50,21 @@ def CalcReac(reactie):
     entReac.delete(0, tk.END)
     entReac.insert(0, reactostr(reac))
 
-    print(TelAtm(reac))
+    print(reactostr(reac))
+    count = TelAtm(reac)
+    print(count)
+
+    for x in count[0]:
+        print(lookup(reac, x, 0))
+
+
+
+def lookup(reac, search, side):
+    y = []
+    for x in reac[side]:
+        if search in x[1]:
+            y.append(x)
+    return y
 
 
 def TelAtm(reac):
