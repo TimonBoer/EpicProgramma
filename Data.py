@@ -1,4 +1,5 @@
 import tkinter as tk
+window = tk.Tk()
 border = tk.GROOVE
 borderW = 5
 BGtitle = 'gray80'
@@ -139,3 +140,6 @@ matrix = [[1, 'H', 'Waterstof', 1.00794, 0.000084, -259.1, -252.9],
           [135, 'C4H10', 'Butaan', 58.1234, 0.573, -138.35, -1],
           [136, 'CH4', 'Methaan', 16.04276, 0.000656, -182, -164],
           [137, 'C2H5OH', 'Ethanol', 46.06904, 0.000789, -114.1, 78.37]]
+cijfers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+frameRow2 = tk.Frame(master=window)
+frameRow3 = tk.Frame(master=window)
