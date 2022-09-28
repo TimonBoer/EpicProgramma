@@ -37,9 +37,43 @@ def CalcReac(reactie):
     if reacMol[0] == 0:
         reacMol[0] = 1
     reac[reacLoR].append(reacMol)
-    print(reac[0])
-    print(reac[1])
 
+
+    for i, x in enumerate(reac):
+        for mi, mx in enumerate(x):
+            form = FormSplit(mx[1])
+            if form == None:
+                return
+            reac[i][mi].append(form[1])
+            reac[i][mi][1] = form[0]
+
+
+    reacstr = reactostr(reac)
+    entReac.delete(0, tk.END)
+    entReac.insert(0, reacstr)
+
+    print(TelAtm(reac))
+
+
+def TelAtm(reac):
+    return
+
+
+
+def reactostr(reac):
+    reacstr = ''
+    for i, x in enumerate(reac):
+        for mi, mx in enumerate(x):
+            if mx[0] == 1:
+                reacstr += mx[2]
+            else:
+                reacstr += str(mx[0]) + mx[2]
+
+            if mi != len(x) - 1:
+                reacstr += ' + '
+        if i == 0:
+            reacstr += ' -> '
+    return reacstr
 
 
 def FormSplit(form):
@@ -78,7 +112,7 @@ def FormSplit(form):
         formule.append(1)
     list, x = FormCheck(formule)
     if list == None:
-        return
+        return None
     dict = {}
     for i in range(0, len(list), 2):
         if list[i] in dict:
@@ -94,7 +128,7 @@ def FormCheckLp(formule, item, formuleStr):
         if row == None:
             messagebox.showerror('Geen geldige formule', '\'' + str(formule[item]) + '\'' + ' bestaat niet')
             formule = []
-            return
+            return None, None
         else:
             formule[item] = matrix[row][1]
             if formule[item + 1] == 1:
@@ -109,7 +143,7 @@ def FormCheckLp(formule, item, formuleStr):
 def FormCheck(formule):
     if formule[0] == '':
         del formule[0:1]
-        FormCheck(formule)
+        return FormCheck(formule)
     else:
         return FormCheckLp(formule, 0, '')
 
@@ -133,4 +167,3 @@ ReacButClr.grid(row=0, column=0, sticky='ew')
 ReacButCalc.grid(row=0, column=1, sticky='ew')
 
 frmReacBut.pack()
-
