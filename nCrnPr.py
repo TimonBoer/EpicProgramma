@@ -6,7 +6,7 @@ import math
 def CPber():
     cp = variable.get()
     if cp == 'nCr/nPr':
-        messagebox.showerror('Noob', 'Vul nCr/nPr in')
+        messagebox.showerror('Slecht', 'Vul nCr/nPr in')
         return
     try:
         n = int(entCPn.get())

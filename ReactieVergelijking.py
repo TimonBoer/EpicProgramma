@@ -8,34 +8,27 @@ def ClrReac():
 
 
 def CalcReac(reactie):
-    reacMol = [0, '']
+    global reac
+    reacMol = [1, '']
     reac = [[], []]
     reacLoR = 0
     for letter in reactie:
         if letter in cijfers:
-            if reacMol[1] == '':
-                reacMol[0] = int(str(reacMol[0]) + str(letter))
-            else:
+            if reacMol[1] != '':
                 reacMol[1] = reacMol[1] + str(letter)
 
         elif letter.isalpha():
             reacMol[1] = reacMol[1] + letter
 
         elif letter == '+':
-            if reacMol[0] == 0:
-                reacMol[0] = 1
             reac[reacLoR].append(reacMol)
-            reacMol = [0, '']
+            reacMol = [1, '']
 
         elif letter == '-' or letter == '=':
-            if reacMol[0] == 0:
-                reacMol[0] = 1
             reac[reacLoR].append(reacMol)
-            reacMol = [0, '']
+            reacMol = [1, '']
             reacLoR = 1
 
-    if reacMol[0] == 0:
-        reacMol[0] = 1
     reac[reacLoR].append(reacMol)
 
 
@@ -50,24 +43,44 @@ def CalcReac(reactie):
     entReac.delete(0, tk.END)
     entReac.insert(0, reactostr(reac))
 
-    print(reactostr(reac))
-    count = TelAtm(reac)
-    print(count)
+    if TelAtm(reac) != 'Cringe':
+        loop(0)
+        entReac.delete(0, tk.END)
+        entReac.insert(0, reactostr(reac))
 
-    for x in count[0]:
-        print(lookup(reac, x, 0))
+
+def loop(total):
+    total += 1
+    if total < 20:
+        global reac
+        count = TelAtm(reac)
+        for atoom in count[0]:
+            delta = count[0][atoom] - count[1][atoom]
+            if delta != 0:
+                if delta < 0:
+                    moleculen = lookup(reac, atoom, 0)
+                elif delta > 0:
+                    moleculen = lookup(reac, atoom, 1)
+                delta = abs(delta)
+                for molecuul in moleculen:
+                    if delta % reac[molecuul[0]][molecuul[1]][1][atoom] == 0:
+                        reac[molecuul[0]][molecuul[1]][0] += int(delta / reac[molecuul[0]][molecuul[1]][1][atoom])
+                        loop(total)
+                        return
+            
 
 
 
 def lookup(reac, search, side):
     y = []
-    for x in reac[side]:
+    for i, x in enumerate(reac[side]):
         if search in x[1]:
-            y.append(x)
+            y.append([side, i])
     return y
 
 
 def TelAtm(reac):
+    print(reactostr(reac))
     count = [{}, {}]
 
     i = 0
@@ -84,13 +97,14 @@ def TelAtm(reac):
     for y in x:
         for z in y[1]:
             if z not in count[0]:
+                print(('cringe', count))
                 return 'Cringe'
             if z in count[i]:
                 count[i][z] += int(y[1][z]) * int(y[0])
             else:
                 count[i][z] = int(y[1][z]) * int(y[0])
+    print(count)
     return count
-
 
 
 def reactostr(reac):
