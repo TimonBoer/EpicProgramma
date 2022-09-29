@@ -44,47 +44,68 @@ def CalcReac(reactie):
     entReac.insert(0, reactostr(reac))
 
     if TelAtm(reac) != 'Cringe':
-        loop(0)
+        gelukt = loop(0)
+        if not gelukt:
+            messagebox.showerror('Sorry man', 'Ik vond het te lang duren, het is niet gelukt')
         print(reac)
+        print('')
         entReac.delete(0, tk.END)
         entReac.insert(0, reactostr(reac))
 
 
 def loop(total):
-    changes = {}
-    global reac
-    count = TelAtm(reac)
-    for atoom in count[0]:
-        delta = int(count[0][atoom] - count[1][atoom])
-        if delta != 0:
-            if delta < 0:
-                moleculen = lookup(reac, atoom, 0)
-            elif delta > 0:
-                moleculen = lookup(reac, atoom, 1)
-            delta = abs(delta)
-            for molecuul in moleculen:
-                molecstr = str(molecuul[0]) + str(molecuul[1])
-                if delta % reac[molecuul[0]][molecuul[1]][1][atoom] == 0:
-                    if molecstr in changes:
-                        changes[molecstr].append([[int(delta / reac[molecuul[0]][molecuul[1]][1][atoom]), 1], atoom])
-                    else:
-                        changes[molecstr] = [[[int(delta / reac[molecuul[0]][molecuul[1]][1][atoom]), 1], atoom]]
-                else:
-                    if molecstr in changes:
-                        changes[molecstr].append([[delta, reac[molecuul[0]][molecuul[1]][1][atoom]], atoom])
-                    else:
-                        changes[molecstr] = [[[delta, reac[molecuul[0]][molecuul[1]][1][atoom]], atoom]]
+    total += 1
+    if total < 50:
+        changes = {}
+        global reac
+        count = TelAtm(reac)
+        for atoom in count[0]:
+            delta = int(count[0][atoom] - count[1][atoom])
+            if delta != 0:
+                if delta < 0:
+                    moleculen = lookup(reac, atoom, 0)
+                elif delta > 0:
+                    moleculen = lookup(reac, atoom, 1)
+                delta = abs(delta)
+                for molecuul in moleculen:
+                    molecstr = str(molecuul[0]) + str(molecuul[1])
+                    molecdict = reac[molecuul[0]][molecuul[1]]
 
-    print(changes)
-    for x in changes:
-        change = changes[x][0][0]
-        for numside, side in enumerate(reac):
-            for nummolec, molec in enumerate(side):
-                reac[numside][nummolec][0] = reac[numside][nummolec][0] * change[1]
-        reac[int(x[0])][int(x[1:])][0] += change[0]
-        loop(0)
-        break
+                    if delta % reac[molecuul[0]][molecuul[1]][1][atoom] == 0:
+                        change = [int(delta / molecdict[1][atoom]), 1]
+                    else:
+                        change = [delta, molecdict[1][atoom]]
 
+                    if molecstr in changes:
+                        listed = False
+                        for i, ListedChange in enumerate(changes[molecstr]):
+                            if ListedChange[0] == change:
+                                changes[molecstr][i][1] -= 1
+                                listed = True
+                        if not listed:
+                            changes[molecstr].append([change, len(molecdict[1]) - 1])
+                    else:
+                        changes[molecstr] = [[change, len(molecdict[1]) - 1]]
+
+        print(changes)
+        if len(changes) > 0:
+            changeslist = []
+            for x in changes:
+                for y in changes[x]:
+                    y.append(x)
+                    changeslist.append(y)
+            changeslist = sorted(changeslist, key=lambda item: item[1])
+            print(changeslist)
+
+            change = changeslist[0]
+            for numside, side in enumerate(reac):
+                for nummolec, molec in enumerate(side):
+                    reac[numside][nummolec][0] = reac[numside][nummolec][0] * change[0][1]
+            reac[int(change[2][0])][int(change[2][1:])][0] += change[0][0]
+            return loop(total)
+        return True
+    else:
+        return False
 
 
 def lookup(reac, search, side):
@@ -113,12 +134,19 @@ def TelAtm(reac):
     for y in x:
         for z in y[1]:
             if z not in count[0]:
+                messagebox.showerror('Slecht', f"'{z}' Komt niet aan beide kanten voor")
                 print(('cringe', count))
                 return 'Cringe'
             if z in count[i]:
                 count[i][z] += int(y[1][z]) * int(y[0])
             else:
                 count[i][z] = int(y[1][z]) * int(y[0])
+
+    for x in count[0]:
+        if x not in count[1]:
+            messagebox.showerror('Slecht', f"'{x}' Komt niet aan beide kanten voor")
+            print(('cringe', count))
+            return 'Cringe'
     print(count)
     return count
 
