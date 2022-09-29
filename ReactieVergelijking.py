@@ -45,29 +45,45 @@ def CalcReac(reactie):
 
     if TelAtm(reac) != 'Cringe':
         loop(0)
+        print(reac)
         entReac.delete(0, tk.END)
         entReac.insert(0, reactostr(reac))
 
 
 def loop(total):
-    total += 1
-    if total < 20:
-        global reac
-        count = TelAtm(reac)
-        for atoom in count[0]:
-            delta = count[0][atoom] - count[1][atoom]
-            if delta != 0:
-                if delta < 0:
-                    moleculen = lookup(reac, atoom, 0)
-                elif delta > 0:
-                    moleculen = lookup(reac, atoom, 1)
-                delta = abs(delta)
-                for molecuul in moleculen:
-                    if delta % reac[molecuul[0]][molecuul[1]][1][atoom] == 0:
-                        reac[molecuul[0]][molecuul[1]][0] += int(delta / reac[molecuul[0]][molecuul[1]][1][atoom])
-                        loop(total)
-                        return
-            
+    changes = {}
+    global reac
+    count = TelAtm(reac)
+    for atoom in count[0]:
+        delta = int(count[0][atoom] - count[1][atoom])
+        if delta != 0:
+            if delta < 0:
+                moleculen = lookup(reac, atoom, 0)
+            elif delta > 0:
+                moleculen = lookup(reac, atoom, 1)
+            delta = abs(delta)
+            for molecuul in moleculen:
+                molecstr = str(molecuul[0]) + str(molecuul[1])
+                if delta % reac[molecuul[0]][molecuul[1]][1][atoom] == 0:
+                    if molecstr in changes:
+                        changes[molecstr].append([[int(delta / reac[molecuul[0]][molecuul[1]][1][atoom]), 1], atoom])
+                    else:
+                        changes[molecstr] = [[[int(delta / reac[molecuul[0]][molecuul[1]][1][atoom]), 1], atoom]]
+                else:
+                    if molecstr in changes:
+                        changes[molecstr].append([[delta, reac[molecuul[0]][molecuul[1]][1][atoom]], atoom])
+                    else:
+                        changes[molecstr] = [[[delta, reac[molecuul[0]][molecuul[1]][1][atoom]], atoom]]
+
+    print(changes)
+    for x in changes:
+        change = changes[x][0][0]
+        for numside, side in enumerate(reac):
+            for nummolec, molec in enumerate(side):
+                reac[numside][nummolec][0] = reac[numside][nummolec][0] * change[1]
+        reac[int(x[0])][int(x[1:])][0] += change[0]
+        loop(0)
+        break
 
 
 
