@@ -1,4 +1,5 @@
 import tkinter as tk
+import numpy as np
 from data import border, borderW, BGtitle, frameRow3, cijfers, matrix
 from tkinter import messagebox
 from PeriodiekSysteem import search
@@ -43,6 +44,11 @@ def CalcReac(reactie):
     entReac.delete(0, tk.END)
     entReac.insert(0, reactostr(reac))
 
+    reacnum = checkreac(reac)
+    print(reacnum)
+
+
+    """
     if TelAtm(reac) != 'Cringe':
         gelukt = loop(0)
         if not gelukt:
@@ -51,6 +57,46 @@ def CalcReac(reactie):
         print('')
         entReac.delete(0, tk.END)
         entReac.insert(0, reactostr(reac))
+    """
+
+def checkreac(reac):
+    count = [[], []]
+    for side, x in enumerate(reac):
+        for y in x:
+            for z in y[1]:
+                if z not in count[side]:
+                    if side == 1:
+                        if z not in count[0]:
+                            messagebox.showerror('Slecht', f"'{z}' Komt niet aan beide kanten voor")
+                            return 'cringe'
+                    count[side].append(z)
+    for x in count[0]:
+        if x not in count[1]:
+            messagebox.showerror('Slecht', f"'{x}' Komt niet aan beide kanten voor")
+            return 'cringe'
+
+    A = []
+    B = []
+    for atoom in count[0]:
+        equation = []
+        for side, x in enumerate(reac):
+            for y in x:
+                if atoom in y[1]:
+                    equation.append(y[1][atoom]*((side*2-1)*-1))
+                else:
+                    equation.append(0)
+        A.append(equation[1:])
+        B.append(equation[0]*-1)
+        print(f"{A[-1]} = {B[-1]}")
+
+    A = np.array(A)
+    B = np.array(B)
+
+    x = np.linalg.solve(A, B)
+    ans = [1]
+    for y in x:
+        ans.append(y)
+    return ans
 
 
 def loop(total):
