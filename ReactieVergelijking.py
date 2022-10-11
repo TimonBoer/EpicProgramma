@@ -87,16 +87,21 @@ def checkreac(reac):
                     equation.append(0)
         A.append(equation[1:])
         B.append(equation[0]*-1)
-        print(f"{A[-1]} = {B[-1]}")
+        #print(f"{A[-1]} = {B[-1]}")
+
 
     A = np.array(A)
     B = np.array(B)
 
-    x = np.linalg.solve(A, B)
+    print(A, B)
+
+    x = np.linalg.lstsq(A, B, rcond=None)
+    print(x)
     ans = [1]
-    for y in x:
-        ans.append(y)
+    for y in x[0]:
+        ans.append(float(y))
     return ans
+
 
 
 def loop(total):
