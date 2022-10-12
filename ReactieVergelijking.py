@@ -1,5 +1,6 @@
 import tkinter as tk
-import numpy as np
+from numpy.linalg import lstsq
+from numpy import array
 from data import border, borderW, BGtitle, frameRow3, cijfers, matrix
 from tkinter import messagebox
 from PeriodiekSysteem import search
@@ -83,7 +84,6 @@ def CalcReac(reactie):
                             atomen[atoom] = molec[1][atoom] * newreacnum[newi]
                 newi += 1
 
-        print(atomen)
         entReac.delete(0, tk.END)
         entReac.insert(0, reactostr(reac))
 
@@ -124,10 +124,10 @@ def checkreac(reac):
         B.append(equation[0]*-1)
 
 
-    A = np.array(A)
-    B = np.array(B)
+    A = array(A)
+    B = array(B)
 
-    x = np.linalg.lstsq(A, B, rcond=None)
+    x = lstsq(A, B, rcond=None)
     ans = [1]
     for y in x[0]:
         ans.append(float(y))
