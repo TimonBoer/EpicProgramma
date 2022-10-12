@@ -6,6 +6,9 @@ from PeriodiekSysteem import search
 
 def ClrReac():
     entReac.delete(0, tk.END)
+    ReacLbx.delete(0, tk.END)
+    ReacLbx['height'] = 0
+    ReacLbx.grid_forget()
 
 
 def CalcReac(reactie):
@@ -85,8 +88,10 @@ def CalcReac(reactie):
         entReac.insert(0, reactostr(reac))
 
         ReacLbx.delete(0, tk.END)
-        for atoom in atomen:
-            ReacLbx.insert()
+        ReacLbx['height'] = len(atomen)
+        for i, atoom in enumerate(atomen):
+            ReacLbx.insert(i, f"{atoom} = {atomen[atoom]}")
+        ReacLbx.grid(row=2, sticky='ew')
 
 
 def checkreac(reac):
@@ -219,13 +224,17 @@ def FormCheck(formule):
 
 frmReacTot = tk.Frame(master=frameRow3, relief=border, borderwidth=borderW)
 
-lblReacTitle = tk.Label(master=frmReacTot, text='Reactievergelijking oplossen', background=BGtitle)
+lblReacTitle = tk.Label(master=frmReacTot, text='Reactievergelijking oplossen', background=BGtitle, width=38)
 
-entReac = tk.Entry(master=frmReacTot)
+entReac = tk.Entry(master=frmReacTot, justify=tk.CENTER)
 
-lblReacTitle.pack(fill='x')
+lblReacTitle.grid(row=0, sticky='ew')
 
-entReac.pack(pady=5, fill='x')
+entReac.grid(row=1, pady=5, sticky='ew')
+
+
+ReacLbx = tk.Listbox(master=frmReacTot, height=1, justify=tk.CENTER)
+
 
 frmReacBut = tk.Frame(master=frmReacTot)
 
@@ -235,6 +244,4 @@ ReacButCalc = tk.Button(master=frmReacBut, text='Los op', width=12, command= lam
 ReacButClr.grid(row=0, column=0, sticky='ew')
 ReacButCalc.grid(row=0, column=1, sticky='ew')
 
-ReacLbx = tk.Listbox(master=frmReacTot, height=1)
-
-frmReacBut.pack()
+frmReacBut.grid(row=3)
