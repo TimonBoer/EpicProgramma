@@ -45,19 +45,49 @@ def CalcReac(reactie):
     entReac.insert(0, reactostr(reac))
 
     reacnum = checkreac(reac)
-    print(reacnum)
 
+    maxdif = 0.001
+    if reacnum != 'cringe':
+        newreacnum = 'cringe'
+        reacflt = []
+        for x in reacnum:
+            if abs(round(x) - x) > maxdif:
+                reacflt.append(x)
 
-    """
-    if TelAtm(reac) != 'Cringe':
-        gelukt = loop(0)
-        if not gelukt:
-            messagebox.showerror('Sorry man', 'Ik vond het te lang duren, het is niet gelukt')
-        print(reac)
-        print('')
+        for product in range(1, 100):
+            goed = True
+            for x in reacflt:
+                y = x * product
+                if abs(round(y) - y) > maxdif:
+                    goed = False
+
+            if goed:
+                newreacnum = []
+                for x in reacnum:
+                    newreacnum.append(int(round(x * product)))
+                break
+
+        newi = 0
+        atomen = {}
+        for side, x in enumerate(reac):
+            for i, molec in enumerate(x):
+                reac[side][i][0] = newreacnum[newi]
+                if side == 0:
+                    for atoom in molec[1]:
+                        if atoom in atomen:
+                            atomen[atoom] += molec[1][atoom] * newreacnum[newi]
+                        else:
+                            atomen[atoom] = molec[1][atoom] * newreacnum[newi]
+                newi += 1
+
+        print(atomen)
         entReac.delete(0, tk.END)
         entReac.insert(0, reactostr(reac))
-    """
+
+        ReacLbx.delete(0, tk.END)
+        for atoom in atomen:
+            ReacLbx.insert()
+
 
 def checkreac(reac):
     count = [[], []]
@@ -87,119 +117,16 @@ def checkreac(reac):
                     equation.append(0)
         A.append(equation[1:])
         B.append(equation[0]*-1)
-        #print(f"{A[-1]} = {B[-1]}")
 
 
     A = np.array(A)
     B = np.array(B)
 
-    print(A, B)
-
     x = np.linalg.lstsq(A, B, rcond=None)
-    print(x)
     ans = [1]
     for y in x[0]:
         ans.append(float(y))
     return ans
-
-
-
-def loop(total):
-    total += 1
-    if total < 50:
-        changes = {}
-        global reac
-        count = TelAtm(reac)
-        for atoom in count[0]:
-            delta = int(count[0][atoom] - count[1][atoom])
-            if delta != 0:
-                if delta < 0:
-                    moleculen = lookup(reac, atoom, 0)
-                elif delta > 0:
-                    moleculen = lookup(reac, atoom, 1)
-                delta = abs(delta)
-                for molecuul in moleculen:
-                    molecstr = str(molecuul[0]) + str(molecuul[1])
-                    molecdict = reac[molecuul[0]][molecuul[1]]
-
-                    if delta % reac[molecuul[0]][molecuul[1]][1][atoom] == 0:
-                        change = [int(delta / molecdict[1][atoom]), 1]
-                    else:
-                        change = [delta, molecdict[1][atoom]]
-
-                    if molecstr in changes:
-                        listed = False
-                        for i, ListedChange in enumerate(changes[molecstr]):
-                            if ListedChange[0] == change:
-                                changes[molecstr][i][1] -= 1
-                                listed = True
-                        if not listed:
-                            changes[molecstr].append([change, len(molecdict[1]) - 1])
-                    else:
-                        changes[molecstr] = [[change, len(molecdict[1]) - 1]]
-
-        print(changes)
-        if len(changes) > 0:
-            changeslist = []
-            for x in changes:
-                for y in changes[x]:
-                    y.append(x)
-                    changeslist.append(y)
-            changeslist = sorted(changeslist, key=lambda item: item[1])
-            print(changeslist)
-
-            change = changeslist[0]
-            for numside, side in enumerate(reac):
-                for nummolec, molec in enumerate(side):
-                    reac[numside][nummolec][0] = reac[numside][nummolec][0] * change[0][1]
-            reac[int(change[2][0])][int(change[2][1:])][0] += change[0][0]
-            return loop(total)
-        return True
-    else:
-        return False
-
-
-def lookup(reac, search, side):
-    y = []
-    for i, x in enumerate(reac[side]):
-        if search in x[1]:
-            y.append([side, i])
-    return y
-
-
-def TelAtm(reac):
-    print(reactostr(reac))
-    count = [{}, {}]
-
-    i = 0
-    x = reac[i]
-    for y in x:
-        for z in y[1]:
-            if z in count[i]:
-                count[i][z] += int(y[1][z]) * int(y[0])
-            else:
-                count[i][z] = int(y[1][z]) * int(y[0])
-
-    i = 1
-    x = reac[i]
-    for y in x:
-        for z in y[1]:
-            if z not in count[0]:
-                messagebox.showerror('Slecht', f"'{z}' Komt niet aan beide kanten voor")
-                print(('cringe', count))
-                return 'Cringe'
-            if z in count[i]:
-                count[i][z] += int(y[1][z]) * int(y[0])
-            else:
-                count[i][z] = int(y[1][z]) * int(y[0])
-
-    for x in count[0]:
-        if x not in count[1]:
-            messagebox.showerror('Slecht', f"'{x}' Komt niet aan beide kanten voor")
-            print(('cringe', count))
-            return 'Cringe'
-    print(count)
-    return count
 
 
 def reactostr(reac):
@@ -307,5 +234,7 @@ ReacButCalc = tk.Button(master=frmReacBut, text='Los op', width=12, command= lam
 
 ReacButClr.grid(row=0, column=0, sticky='ew')
 ReacButCalc.grid(row=0, column=1, sticky='ew')
+
+ReacLbx = tk.Listbox(master=frmReacTot, height=1)
 
 frmReacBut.pack()

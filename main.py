@@ -19,10 +19,10 @@ from TwentyFourGame import frm24Game, TwfGameEnt1, TwfGameEnt2, TwfGameEnt3, Twf
 frm24Game.grid(row=0, column=1, padx=5)
 
 from GtaVoltHack import VLFrame, VLCinp1, VLCinp2, VLCinp3, VLFinp1, VLFinp2, VLFinp3, VLtargEnt, VLhack
-VLFrame.grid(row=0, column=2)
+VLFrame.grid(row=0, column=2, padx=5)
 
 from FileDateChanger import FTFrame
-FTFrame.grid(row=0, column=3)
+FTFrame.grid(row=0, column=3, padx=5)
 
 from nCrnPr import frmCP, entCPn, entCPr, CPber
 frmCP.grid(row=0, column=0, padx=5)
